@@ -4,25 +4,25 @@ public class State
 {
     public State(bool isFinal) => IsFinal = isFinal;
 
-    public State(Action<TreeNode> action) => _action = action;
+    public State(Func<TreeNode, TreeNode> action) => _action = action;
     
-    public State(bool isFinal, Action<TreeNode> action)
+    public State(bool isFinal, Func<TreeNode, TreeNode> action)
     {
         IsFinal = isFinal;
         _action = action;
     }
     
-    public void ExecuteAction(TreeNode node) => _action(node);
+    public TreeNode ExecuteAction(TreeNode node) => _action(node);
 
-    public State Transition(char charFromInputString, char charFromStack) =>
+    public Tuple<State, char> Transition(char charFromInputString, char charFromStack) =>
         _adjacentStates[$"{charFromInputString}{charFromStack}"];
 
-    public void AddState(char charFromInputString, char charFromStack, State state) =>
+    public void AddState(char charFromInputString, char charFromStack, Tuple<State, char> state) =>
         _adjacentStates.Add($"{charFromInputString}{charFromStack}", state);
     
     public bool IsFinal { get; }
 
-    private readonly Action<TreeNode> _action = (_) => { };
+    private readonly Func<TreeNode, TreeNode> _action = node => node;
 
-    private readonly Dictionary<string, State> _adjacentStates = new();
+    private readonly Dictionary<string, Tuple<State, char>> _adjacentStates = new();
 }

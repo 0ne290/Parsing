@@ -12,6 +12,16 @@ public class TreeNode
         RightChild = this;
     }
 
+    public TreeNode GetRoot()
+    {
+        var root = this;
+
+        while (!root.IsRoot())
+            root = root.Parent;
+
+        return root;
+    }
+
     public bool IsLeaf() => SubtreeIsEmpty(LeftChild) && SubtreeIsEmpty(RightChild);
 
     public bool IsRoot() => SubtreeIsEmpty(Parent);
