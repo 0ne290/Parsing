@@ -2,6 +2,8 @@ namespace Parsing;
 
 public class State
 {
+    public State() { }
+    
     public State(bool isFinal) => IsFinal = isFinal;
 
     public State(Func<TreeNode, TreeNode> action) => _action = action;
