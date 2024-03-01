@@ -4,10 +4,10 @@ namespace Parsing;
 
 public class TreeNode
 {
-    public TreeNode()
+    public TreeNode(TreeNode? parent = null)
     {
         Oper = string.Empty;
-        Parent = this;
+        Parent = parent ?? this;
         LeftChild = this;
         RightChild = this;
     }

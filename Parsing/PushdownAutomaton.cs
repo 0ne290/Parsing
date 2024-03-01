@@ -8,14 +8,12 @@ public class PushdownAutomaton
     {
         var treeNode = new TreeNode();
         
-        _stack.Push(default);
-        
         while (!_currentState.IsFinal)
         {
             var transition = _currentState.ExecuteTransition(inputString[_inputStringIndex]);
             transition.StackAction(_stack);
-            transition.LexemeAction(_lexeme);
-            treeNode = transition.TreeAction(treeNode);
+            transition.LexemeAction(_lexeme, inputString[_inputStringIndex]);
+            treeNode = transition.TreeAction(_lexeme, treeNode);
             _currentState = transition.State;
             _inputStringIndex++;
         }

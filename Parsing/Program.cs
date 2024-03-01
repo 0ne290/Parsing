@@ -9,20 +9,31 @@ internal static class Program
 
     private static void RootOfComposition()
     {
-        var state1 = new State();
-        state1.AddState('(', default, Tuple.Create(state1, '+'));
+        var one = new State();
+        one.AddState('(', new Transition(one, Transition.TreeActionOpeningParenthesis, Transition.StackActionPush));
+
+        var five = new State();
+        one.AddState('0', new Transition(five, lexemeAction: Transition.LexemeActionAddChar));
         
-        var state2 = new State(node =>
-        {
-            var newNode = new TreeNode();
-            node.LeftChild = newNode;
-            return newNode;
-        });
-        state2.AddState('(', default, Tuple.Create(state1, default(char)));
-        state1.AddState('(', default, Tuple.Create(state1, '+'));
+        var ten = new State();
+        var transition = new Transition(ten, lexemeAction: Transition.LexemeActionAddChar);
+        five.AddState('.', transition);
+        
+        ten.AddState('0', transition);
+        ten.AddState('1', transition);
+        ten.AddState('2', transition);
+        ten.AddState('3', transition);
+        ten.AddState('4', transition);
+        ten.AddState('5', transition);
+        ten.AddState('6', transition);
+        ten.AddState('7', transition);
+        ten.AddState('8', transition);
+        ten.AddState('9', transition);
+        
+        ten.AddState('+', new Transition(one));
         
         
-        var state3 = new State();
+        
         var state4 = new State();
         var state5 = new State();
         var state6 = new State();

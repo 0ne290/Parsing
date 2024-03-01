@@ -2,9 +2,7 @@ namespace Parsing;
 
 public class State
 {
-    public State() { }
-    
-    public State(bool isFinal) => IsFinal = isFinal;
+    public State(bool isFinal = false) => IsFinal = isFinal;
 
     public Transition ExecuteTransition(char charFromInputString) => _transitions[charFromInputString];
 
