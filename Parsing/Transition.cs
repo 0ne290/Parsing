@@ -22,6 +22,7 @@ public class Transition
     {
         var newNode = new TreeNode(node);
         node.LeftChild = newNode;
+        
         return newNode;
     };
     
@@ -31,7 +32,7 @@ public class Transition
         LexemeAction), а не в действиях с деревом (методы с префиксом, TreeAction), но я всё-таки принял решение
         ввести этот небольшой костыль, т. к. иначе потребовалось бы переписать части компонентов системы
     */
-    public static Func<List<char>, TreeNode, TreeNode> TreeActionOperator { get; } = (lexeme, node) =>
+    public static Func<List<char>, TreeNode, TreeNode> TreeActionOperatorAfterToken { get; } = (lexeme, node) =>
     {
         var operand = new char[lexeme.Count - 1];
         lexeme.CopyTo(0, operand, 0, operand.Length);
@@ -47,6 +48,15 @@ public class Transition
         return newNode;
     };
     
+    public static Func<List<char>, TreeNode, TreeNode> TreeActionOperatorAfterClosingParenthesis { get; } = (lexeme, node) =>
+    {
+        node.Oper = lexeme[^1].ToString();
+        var newNode = new TreeNode(node);
+        node.RightChild = newNode;
+        
+        return newNode;
+    };
+    
     public static Func<List<char>, TreeNode, TreeNode> TreeActionEnd { get; } = (lexeme, node) =>
     {
         node.Oper = new string(lexeme.ToArray());
@@ -54,7 +64,9 @@ public class Transition
         return node;
     };
 
-    public static Func<List<char>, TreeNode, TreeNode> TreeActionClosingParenthesis { get; } = (lexeme, node) =>
+    public static Func<List<char>, TreeNode, TreeNode> TreeActionNestedClosingParenthesis { get; } = (_, node) => node.Parent;
+
+    public static Func<List<char>, TreeNode, TreeNode> TreeActionClosingParenthesisAfterToken { get; } = (lexeme, node) =>
     {
         node.Oper = new string(lexeme.ToArray());
 
