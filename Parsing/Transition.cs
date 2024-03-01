@@ -25,14 +25,41 @@ public class Transition
         return newNode;
     };
     
+    /*
+        ПРЕДУПРЕЖДЕНИЕ! ДАННОЕ ДЕЙСТВИЕ ОЧИЩАЕТ ЛЕКСЕМУ!
+        Я понимаю, что очищение лексемы по-хорошему должно выполняться в действиях с лексемой (методы с префиксом,
+        LexemeAction), а не в действиях с деревом (методы с префиксом, TreeAction), но я всё-таки принял решение
+        ввести этот небольшой костыль, т. к. иначе потребовалось бы переписать части компонентов системы
+    */
     public static Func<List<char>, TreeNode, TreeNode> TreeActionOperator { get; } = (lexeme, node) =>
     {
+        var operand = new char[lexeme.Count - 1];
+        lexeme.CopyTo(0, operand, 0, operand.Length);
+        node.Oper = new string(operand);
         
+        var operatorNode = node.Parent;
+        operatorNode.Oper = lexeme[^1].ToString();
+        var newNode = new TreeNode(operatorNode);
+        operatorNode.RightChild = newNode;
         
-        node.Oper = new string(lexeme.ToArray());// Это для операнда. Получить массив всех символов без последнего (последний - знак оператора + или *). Добавить аналогичный код для оператора
+        lexeme.Clear();// Вот это гадство
+
+        return newNode;
+    };
+    
+    public static Func<List<char>, TreeNode, TreeNode> TreeActionEnd { get; } = (lexeme, node) =>
+    {
+        node.Oper = new string(lexeme.ToArray());
+
+        return node;
     };
 
-    public static Func<List<char>, TreeNode, TreeNode> TreeActionClosingParenthesis { get; } = (_, node) => node.Parent;
+    public static Func<List<char>, TreeNode, TreeNode> TreeActionClosingParenthesis { get; } = (lexeme, node) =>
+    {
+        node.Oper = new string(lexeme.ToArray());
+
+        return node.Parent.Parent;
+    };
 
     public static Action<Stack<char>> StackActionPush { get; } = stack => stack.Push('+');
 
@@ -42,6 +69,12 @@ public class Transition
 
         if (character != '+')
             throw new Exception("Expected '+' character on stack");
+    };
+    
+    public static Action<Stack<char>> StackActionEmpty { get; } = stack =>
+    {
+        if (stack.Count > 0)
+            throw new Exception("The stack was expected to be empty");
     };
     
     public static Action<List<char>, char> LexemeActionAddChar { get; } = (lexeme, character) => lexeme.Add(character);
