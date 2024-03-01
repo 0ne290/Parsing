@@ -38,7 +38,19 @@ public class Transition
         lexeme.CopyTo(0, operand, 0, operand.Length);
         node.Oper = new string(operand);
         
+        
+        
         var operatorNode = node.Parent;
+
+        if (operatorNode == node)
+        {
+            Console.WriteLine("ghh34");
+            operatorNode = new TreeNode
+            {
+                LeftChild = node
+            };
+        }
+        
         operatorNode.Oper = lexeme[^1].ToString();
         var newNode = new TreeNode(operatorNode);
         operatorNode.RightChild = newNode;
@@ -69,6 +81,8 @@ public class Transition
     public static Func<List<char>, TreeNode, TreeNode> TreeActionClosingParenthesisAfterToken { get; } = (lexeme, node) =>
     {
         node.Oper = new string(lexeme.ToArray());
+        
+        lexeme.Clear();
 
         return node.Parent.Parent;
     };

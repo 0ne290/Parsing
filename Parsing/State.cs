@@ -2,7 +2,11 @@ namespace Parsing;
 
 public class State
 {
-    public State(bool isFinal = false) => IsFinal = isFinal;
+    public State(string name, bool isFinal = false)
+    {
+        Name = name;
+        IsFinal = isFinal;
+    }
 
     public Transition ExecuteTransition(char charFromInputString) => _transitions[charFromInputString];
 
@@ -10,6 +14,8 @@ public class State
         _transitions.Add(charFromInputString, transition);
     
     public bool IsFinal { get; }
+    
+    public string Name { get; }
 
     private readonly Dictionary<char, Transition> _transitions = new();
 }

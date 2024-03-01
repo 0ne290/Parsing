@@ -6,19 +6,27 @@ public class PushdownAutomaton
     
     public TreeNode BuildSyntaxTree(char[] inputString)
     {
-        var treeNode = new TreeNode();
-        
-        while (!_currentState.IsFinal)
+        try
         {
-            var transition = _currentState.ExecuteTransition(inputString[_inputStringIndex]);
-            transition.StackAction(_stack);
-            transition.LexemeAction(_lexeme, inputString[_inputStringIndex]);
-            treeNode = transition.TreeAction(_lexeme, treeNode);
-            _currentState = transition.State;
-            _inputStringIndex++;
-        }
+            var treeNode = new TreeNode();
 
-        return treeNode.GetRoot();
+            while (!_currentState.IsFinal)
+            {
+                Console.WriteLine(_currentState.Name);
+                var transition = _currentState.ExecuteTransition(inputString[_inputStringIndex]);
+                transition.StackAction(_stack);
+                transition.LexemeAction(_lexeme, inputString[_inputStringIndex]);
+                treeNode = transition.TreeAction(_lexeme, treeNode);
+                _currentState = transition.State;
+                _inputStringIndex++;
+            }
+
+            return treeNode.GetRoot();
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"{_inputStringIndex}");
+        }
     }
     
     private State _currentState;

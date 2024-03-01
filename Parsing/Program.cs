@@ -6,18 +6,19 @@ internal static class Program
     {
         var stateMachine = RootOfComposition();
 
-        var treeRoot = stateMachine.BuildSyntaxTree("1+7\0".ToCharArray());
+        var treeRoot = stateMachine.BuildSyntaxTree("2+6+12+13\0".ToCharArray());
         
-        Console.WriteLine(treeRoot.Oper);
+        
+        Console.WriteLine(treeRoot.LeftChild.Oper);
     }
 
     private static PushdownAutomaton RootOfComposition()
     {
-        var one = new State();
-        var nine = new State();
+        var one = new State("one");
+        var nine = new State("nine");
         
         
-        var finalState = new State(true);
+        var finalState = new State("final", true);
         var finalTransition = new Transition(finalState, Transition.TreeActionEnd, Transition.StackActionEmpty);
         var operatorAfterTokenTransition =
                     new Transition(one, Transition.TreeActionOperatorAfterToken, lexemeAction: Transition.LexemeActionAddChar);
@@ -33,12 +34,12 @@ internal static class Program
         nine.AddState('*', transition);
         
         
-        var five = new State();
+        var five = new State("five");
         
         one.AddState('0', new Transition(five, lexemeAction: Transition.LexemeActionAddChar));
         
         
-        var eigth = new State();
+        var eigth = new State("eigth");
         
         transition = new Transition(eigth, lexemeAction: Transition.LexemeActionAddChar);
         
@@ -61,7 +62,7 @@ internal static class Program
         eigth.AddState('\0', finalTransition);
         
         
-        var seven = new State();
+        var seven = new State("seven");
         seven.AddState('1', transition);
         seven.AddState('2', transition);
         seven.AddState('3', transition);
@@ -73,13 +74,13 @@ internal static class Program
         seven.AddState('9', transition);
         
         
-        var six = new State();
+        var six = new State("six");
         transition = new Transition(seven, lexemeAction: Transition.LexemeActionAddChar);
         six.AddState('+', transition);
         six.AddState('-', transition);
         
         
-        var ten = new State();
+        var ten = new State("ten");
         transition = new Transition(ten, lexemeAction: Transition.LexemeActionAddChar);
         five.AddState('.', transition);
         
@@ -105,7 +106,7 @@ internal static class Program
         
         
         
-        var four = new State();
+        var four = new State("four");
         transition = new Transition(four, lexemeAction: Transition.LexemeActionAddChar);
         one.AddState('1', transition);
         one.AddState('2', transition);
@@ -141,7 +142,7 @@ internal static class Program
         
         
         
-        var three = new State();
+        var three = new State("three");
         transition = new Transition(three, lexemeAction: Transition.LexemeActionAddChar);
         one.AddState('A', transition);
         one.AddState('B', transition);
