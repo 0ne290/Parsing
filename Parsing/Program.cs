@@ -6,10 +6,12 @@ internal static class Program
     {
         var stateMachine = RootOfComposition();
 
-        var treeRoot = stateMachine.BuildSyntaxTree("2+6+12+13\0".ToCharArray());
-        
-        
-        Console.WriteLine(treeRoot.LeftChild.Oper);
+        var tokens = stateMachine.Parse("(x+4)*(r46h+87)\0".ToCharArray());
+
+        foreach (var token in tokens)
+        {
+            Console.WriteLine($"{token.Value} {token.Type} {token.Priority}");
+        }
     }
 
     private static PushdownAutomaton RootOfComposition()
@@ -19,19 +21,19 @@ internal static class Program
         
         
         var finalState = new State("final", true);
-        var finalTransition = new Transition(finalState, Transition.TreeActionEnd, Transition.StackActionEmpty);
-        var operatorAfterTokenTransition =
-                    new Transition(one, Transition.TreeActionOperatorAfterToken, lexemeAction: Transition.LexemeActionAddChar);
-        var closingParenthesisAfterTokenTransition =
-            new Transition(nine, Transition.TreeActionClosingParenthesisAfterToken, Transition.StackActionPop);
+        var finalTransition = new Transition(finalState, Transition.StackActionEmpty, Transition.LexemeActionOperandRecognized);
+        var operandAndOperatorTransition =
+                    new Transition(one, lexemeAction: Transition.LexemeActionOperandAndOperatorRecognized);
+        var operandAndClosingParenthesisTransition =
+            new Transition(nine, Transition.StackActionPop, Transition.LexemeActionOperandAndOperatorRecognized);
         
         
-        one.AddState('(', new Transition(one, Transition.TreeActionOpeningParenthesis, Transition.StackActionPush));
-        nine.AddState(')', new Transition(nine, Transition.TreeActionNestedClosingParenthesis, Transition.StackActionPop));
-        var transition = new Transition(one, Transition.TreeActionOperatorAfterClosingParenthesis,
-            lexemeAction: Transition.LexemeActionAddChar);
+        one.AddState('(', new Transition(one, Transition.StackActionPush, Transition.LexemeActionOperatorRecognized));
+        nine.AddState(')', new Transition(nine, Transition.StackActionPop, Transition.LexemeActionOperatorRecognized));
+        var transition = new Transition(one, lexemeAction: Transition.LexemeActionOperatorRecognized);
         nine.AddState('+', transition);
         nine.AddState('*', transition);
+        nine.AddState('\0', new Transition(finalState, Transition.StackActionEmpty));
         
         
         var five = new State("five");
@@ -54,10 +56,10 @@ internal static class Program
         eigth.AddState('8', transition);
         eigth.AddState('9', transition);
         
-        eigth.AddState(')', closingParenthesisAfterTokenTransition);
+        eigth.AddState(')', operandAndClosingParenthesisTransition);
         
-        eigth.AddState('+', operatorAfterTokenTransition);
-        eigth.AddState('*', operatorAfterTokenTransition);
+        eigth.AddState('+', operandAndOperatorTransition);
+        eigth.AddState('*', operandAndOperatorTransition);
         
         eigth.AddState('\0', finalTransition);
         
@@ -97,10 +99,10 @@ internal static class Program
         
         ten.AddState('E', new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
         
-        ten.AddState(')', closingParenthesisAfterTokenTransition);
+        ten.AddState(')', operandAndClosingParenthesisTransition);
         
-        ten.AddState('+', operatorAfterTokenTransition);
-        ten.AddState('*', operatorAfterTokenTransition);
+        ten.AddState('+', operandAndOperatorTransition);
+        ten.AddState('*', operandAndOperatorTransition);
         
         ten.AddState('\0', finalTransition);
         
@@ -133,10 +135,10 @@ internal static class Program
         
         four.AddState('E', new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
         
-        four.AddState(')', closingParenthesisAfterTokenTransition);
+        four.AddState(')', operandAndClosingParenthesisTransition);
         
-        four.AddState('+', operatorAfterTokenTransition);
-        four.AddState('*', operatorAfterTokenTransition);
+        four.AddState('+', operandAndOperatorTransition);
+        four.AddState('*', operandAndOperatorTransition);
         
         four.AddState('\0', finalTransition);
         
@@ -263,10 +265,10 @@ internal static class Program
         three.AddState('8', transition);
         three.AddState('9', transition);
         
-        three.AddState(')', closingParenthesisAfterTokenTransition);
+        three.AddState(')', operandAndClosingParenthesisTransition);
         
-        three.AddState('+', operatorAfterTokenTransition);
-        three.AddState('*', operatorAfterTokenTransition);
+        three.AddState('+', operandAndOperatorTransition);
+        three.AddState('*', operandAndOperatorTransition);
         
         three.AddState('\0', finalTransition);
 

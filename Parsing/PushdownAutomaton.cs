@@ -4,26 +4,22 @@ public class PushdownAutomaton
 {
     public PushdownAutomaton(State initialState) => _currentState = initialState;
     
-    public TreeNode BuildSyntaxTree(char[] inputString)
+    public List<Token> Parse(char[] inputString)
     {
         try
         {
-            var treeNode = new TreeNode();
-
             while (!_currentState.IsFinal)
             {
-                Console.WriteLine(_currentState.Name);
                 var transition = _currentState.ExecuteTransition(inputString[_inputStringIndex]);
                 transition.StackAction(_stack);
-                transition.LexemeAction(_lexeme, inputString[_inputStringIndex]);
-                treeNode = transition.TreeAction(_lexeme, treeNode);
+                transition.LexemeAction(_tokens, _currentToken, inputString[_inputStringIndex]);
                 _currentState = transition.State;
                 _inputStringIndex++;
             }
 
-            return treeNode.GetRoot();
+            return new List<Token>(_tokens);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             throw new Exception($"{_inputStringIndex}");
         }
@@ -33,7 +29,9 @@ public class PushdownAutomaton
 
     private readonly Stack<char> _stack = new();
     
-    private readonly List<char> _lexeme = new();
+    private readonly List<char> _currentToken = new();
+    
+    private readonly List<Token> _tokens = new();
 
     private int _inputStringIndex;
 }
