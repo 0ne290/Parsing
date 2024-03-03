@@ -6,6 +6,7 @@ public class Optimizer : IOptimizer
 {
     public string Optimize(string code)
     {
+        var regex = new Regex("LOAD [^;]+;STORE [^;]+;");
         return code.Replace(";", ";\n");
     }
 }
