@@ -1,4 +1,4 @@
-using Parsing.Core.Domain.Data.BinaryTree;
+using Parsing.Core.Domain.Data.BinarySyntaxTree;
 using Parsing.Core.Domain.Data.Syntax;
 using Parsing.Core.Domain.Enums;
 using Parsing.Core.Domain.Interfaces;
@@ -17,13 +17,13 @@ public class MarshallingYardAlgorithm : ISyntaxTreeBuilder
             switch (token.Type)
             {
                 case TokenType.Operand:
-                    nodeStack.Push(new TreeNode(token.Value));
+                    nodeStack.Push(new TreeNode(new Name(token.Value)));
                     
                     break;
                 case TokenType.Operator:
                 {
                     while (operatorStack.TryPeek(out var t) && t.Type != TokenType.OpeningParenthesis && t.Priority >= token.Priority)
-                        nodeStack.Push(new TreeNode(operatorStack.Pop().Value, nodeStack.Pop(), nodeStack.Pop()));
+                        nodeStack.Push(new TreeNode(new Name(operatorStack.Pop().Value), nodeStack.Pop(), nodeStack.Pop()));
                     
                     operatorStack.Push(token);
                     
@@ -36,7 +36,7 @@ public class MarshallingYardAlgorithm : ISyntaxTreeBuilder
                 case TokenType.ClosingParenthesis:
                 {
                     while (operatorStack.Peek().Type != TokenType.OpeningParenthesis)
-                        nodeStack.Push(new TreeNode(operatorStack.Pop().Value, nodeStack.Pop(), nodeStack.Pop()));
+                        nodeStack.Push(new TreeNode(new Name(operatorStack.Pop().Value), nodeStack.Pop(), nodeStack.Pop()));
                     
                     operatorStack.Pop();
                     
@@ -48,7 +48,7 @@ public class MarshallingYardAlgorithm : ISyntaxTreeBuilder
         }
         
         while (operatorStack.Count > 0)
-            nodeStack.Push(new TreeNode(operatorStack.Pop().Value, nodeStack.Pop(), nodeStack.Pop()));
+            nodeStack.Push(new TreeNode(new Name(operatorStack.Pop().Value), nodeStack.Pop(), nodeStack.Pop()));
 
         return nodeStack.Pop();
     }

@@ -1,3 +1,4 @@
+using Parsing.Core.Domain.Data.BinarySyntaxTree;
 using Parsing.Core.Domain.Interfaces;
 
 namespace Parsing.Core.Domain.Logic;
@@ -18,7 +19,11 @@ public class Translator
 
         _logger.LogNameTable(_nameParser.Parse(tokens)); 
 
-        //var rootOfSyntaxTree = _syntaxTreeBuildAlgorithm.BuildSyntaxTree(tokens);
+        var rootOfSyntaxTree = _syntaxTreeBuilder.BuildSyntaxTree(tokens);
+        
+        TreeNode.GenerateCode();
+        
+        Console.WriteLine(rootOfSyntaxTree.Code);
     }
     
     private readonly IStateMachine _stateMachine;
