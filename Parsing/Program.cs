@@ -9,7 +9,7 @@ internal static class Program
     {
         var translator = RootOfComposition();
         
-        translator.Translate("Wfs545+131+232*12*53+3*3+13.8*Jvrw1+12E+7+(1312+354+423*2)*131\0".ToCharArray());
+        translator.Translate("Yegvxd=Wfs545+131+232*12*53+3*3+13.8*Jvrw1+12E+7+(1312+354+423*2)*131");
     }
 
     private static Translator RootOfComposition()
@@ -271,6 +271,6 @@ internal static class Program
         three.AddState('\0', finalTransition);
 
 
-        return new Translator(new PushdownAutomaton(one), new NameParser(), new MarshallingYardAlgorithm(), new Logger());
+        return new Translator(new PushdownAutomaton(one), new NameParser(), new MarshallingYardAlgorithm(), new Optimizer(), new Logger());
     }
 }
