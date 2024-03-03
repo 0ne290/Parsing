@@ -1,4 +1,4 @@
-namespace Parsing;
+namespace Parsing.Core.Domain.Data.StateMachine;
 
 public class State
 {

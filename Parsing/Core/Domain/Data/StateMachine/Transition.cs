@@ -1,4 +1,6 @@
-namespace Parsing;
+using Parsing.Core.Domain.Data.Syntax;
+
+namespace Parsing.Core.Domain.Data.StateMachine;
 
 public class Transition
 {

@@ -1,20 +1,18 @@
-﻿namespace Parsing;
+﻿using Parsing.Core.Domain.Data.StateMachine;
+using Parsing.Core.Domain.Logic;
+
+namespace Parsing;
 
 internal static class Program
 {
     private static void Main()
     {
-        var stateMachine = RootOfComposition();
-
-        var tokens = stateMachine.Parse("(x+4)*(r46h+87)\0".ToCharArray());
-
-        foreach (var token in tokens)
-        {
-            Console.WriteLine($"{token.Value} {token.Type} {token.Priority}");
-        }
+        var translator = RootOfComposition();
+        
+        translator.Translate("Wfs545+131+232*12*53+3*3+13.8*Jvrw1+12E+7+(1312+354+423*2)*131\0".ToCharArray());
     }
 
-    private static PushdownAutomaton RootOfComposition()
+    private static Translator RootOfComposition()
     {
         var one = new State("one");
         var nine = new State("nine");
@@ -273,6 +271,6 @@ internal static class Program
         three.AddState('\0', finalTransition);
 
 
-        return new PushdownAutomaton(one);
+        return new Translator(new PushdownAutomaton(one), new NameParser(), new MarshallingYardAlgorithm(), new Logger());
     }
 }

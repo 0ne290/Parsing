@@ -1,12 +1,11 @@
-namespace Parsing;
+using Parsing.Core.Domain.Enums;
+
+namespace Parsing.Core.Domain.Data.Syntax;
 
 public class Token
 {
     #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    public Token(string value)
-    {
-        Value = value;
-    }
+    public Token(string value) => Value = value;
 
     public string Value
     {

@@ -1,4 +1,4 @@
-namespace Parsing;
+namespace Parsing.Core.Domain.Enums;
 
 public enum TokenType
 {

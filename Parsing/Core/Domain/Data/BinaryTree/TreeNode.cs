@@ -1,4 +1,4 @@
-namespace Parsing;
+namespace Parsing.Core.Domain.Data.BinaryTree;
 
 public class TreeNode
 {

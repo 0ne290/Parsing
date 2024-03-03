@@ -1,6 +1,10 @@
-namespace Parsing;
+using Parsing.Core.Domain.Data.StateMachine;
+using Parsing.Core.Domain.Data.Syntax;
+using Parsing.Core.Domain.Interfaces;
 
-public class PushdownAutomaton
+namespace Parsing.Core.Domain.Logic;
+
+public class PushdownAutomaton : IStateMachine
 {
     public PushdownAutomaton(State initialState) => _currentState = initialState;
     
