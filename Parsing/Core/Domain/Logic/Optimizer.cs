@@ -11,6 +11,39 @@ public partial class Optimizer : IOptimizer
         
         return code.Replace(";", ";\n");
     }
+    
+    private string ApplyRuleThree(string code)
+    {
+        var regex = Regex3();
+
+        var mathes = regex.Matches(code);
+
+        foreach (Match match in mathes)
+        {
+            var beginIndex = match.Value.IndexOf("STORE ", StringComparison.Ordinal) + "STORE ".Length;
+            var endIndex = match.Value.IndexOf(";", StringComparison.Ordinal);
+            var operand = match.Value[beginIndex..endIndex];
+            beginIndex = match.Value.IndexOf("LOAD ", StringComparison.Ordinal) + "LOAD ".Length;
+
+            if (operand != match.Value[beginIndex..^1])
+                continue;
+            
+            int beginbeginIndex;
+            while ((beginbeginIndex = code.IndexOf(match.Value, StringComparison.Ordinal)) != -1)
+            {
+                beginIndex = beginbeginIndex + match.Value.Length;
+                if (code.IndexOf($"STORE {operand}", beginIndex, StringComparison.Ordinal) > code.IndexOf(operand, beginIndex, StringComparison.Ordinal))
+                    continue;
+                
+                var stringBuilder = new StringBuilder(code);
+                stringBuilder.Remove(beginbeginIndex, match.Value.Length);
+
+                code = stringBuilder.ToString();
+            }
+        }
+
+        return code;
+    }
 
     private string ApplyRuleFour(string code)
     {
