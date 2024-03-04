@@ -8,8 +8,14 @@ internal static class Program
     private static void Main()
     {
         var translator = RootOfComposition();
+
+        var reader = new StreamReader("input.txt", System.Text.Encoding.UTF8);
+
+        var inputString = reader.ReadToEnd();
         
-        translator.Translate("Yegvxd=Wfs545+131+232*12*53+3*3+13.8*Jvrw1+12E+7+(1312+354+423*2)*131");
+        reader.Dispose();
+        
+        translator.Translate(inputString);
     }
 
     private static Translator RootOfComposition()
