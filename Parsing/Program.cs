@@ -96,6 +96,7 @@ internal static class Program
         ten.AddState('9', transition);
         
         ten.AddState('E', new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
+        ten.AddState('e', new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
         
         ten.AddState(')', operandAndClosingParenthesisTransition);
         
@@ -132,6 +133,7 @@ internal static class Program
         four.AddState('.', new Transition(ten, lexemeAction: Transition.LexemeActionAddChar));
         
         four.AddState('E', new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
+        four.AddState('e', new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
         
         four.AddState(')', operandAndClosingParenthesisTransition);
         
