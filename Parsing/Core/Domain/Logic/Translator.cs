@@ -18,25 +18,26 @@ public class Translator
 
     public void Translate(string inputString)
     {
-        inputString = inputString.Replace(" ", "");
-        inputString = inputString.Replace("\n", "");
-
-        string leftOperand;
-        try
-        {
-            leftOperand = inputString[..inputString.IndexOf('=')];
-        }
-        catch (Exception)
-        {
-            throw new Exception("Assignment operator not found");
-        }
+        inputString += '\0';
+        //inputString = inputString.Replace(" ", "");
+        //inputString = inputString.Replace("\n", "");
+//
+        //string leftOperand;
+        //try
+        //{
+        //    leftOperand = inputString[..inputString.IndexOf('=')];
+        //}
+        //catch (Exception)
+        //{
+        //    throw new Exception("Assignment operator not found");
+        //}
+        //
+        //var rightOperand = inputString[(inputString.IndexOf('=') + 1)..] + '\0';
+//
+        //if (Name.GetNameType(leftOperand) != NameType.Variable)
+        //    throw new Exception("The left operand must be a variable");
         
-        var rightOperand = inputString[(inputString.IndexOf('=') + 1)..] + '\0';
-
-        if (Name.GetNameType(leftOperand) != NameType.Variable)
-            throw new Exception("The left operand must be a variable");
-        
-        var tokens = _stateMachine.Parse(rightOperand.ToCharArray());
+        var tokens = _stateMachine.Parse(inputString.ToCharArray());
 
         _logger.LogNameTable(_nameParser.Parse(tokens)); 
 
@@ -44,7 +45,7 @@ public class Translator
         
         TreeNode.GenerateCode();
 
-        var unoptimizedCode = $"LOAD {rootOfSyntaxTree.Code};\nSTORE {leftOperand};".Replace(";;", ";");
+        var unoptimizedCode = rootOfSyntaxTree.Code.Replace(";;", ";");
 
         var optimizedCode = _optimizer.Optimize(unoptimizedCode.Replace("\n", ""));
         

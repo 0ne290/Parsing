@@ -14,14 +14,19 @@ public class Token
         {
             switch (value)
             {
-                case "+":
+                case "=":
                     Type = TokenType.Operator;
                     Priority = 1;
                     _value = value;
                     break;
-                case "*":
+                case "+":
                     Type = TokenType.Operator;
                     Priority = 2;
+                    _value = value;
+                    break;
+                case "*":
+                    Type = TokenType.Operator;
+                    Priority = 3;
                     _value = value;
                     break;
                 case "(":

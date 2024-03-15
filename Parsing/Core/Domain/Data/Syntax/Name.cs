@@ -19,6 +19,7 @@ public class Name
         {
             "*" => NameType.Multiplication,
             "+" => NameType.Addition,
+            "=" => NameType.Assignment,
             _ => NameType.Variable
         };
     }

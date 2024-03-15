@@ -27,6 +27,7 @@ public class TreeNode
             node.Code = node.Oper.Type switch
             {
                 NameType.Variable => node.Oper.Value,
+                NameType.Assignment => $"LOAD {node.LeftChild.Code};\nSTORE {node.RightChild.Code};",
                 NameType.Addition =>
                     $"{node.RightChild.Code};\nSTORE $l{node.Level};\nLOAD {node.LeftChild.Code};\nADD $l{node.Level};",
                 NameType.Multiplication =>

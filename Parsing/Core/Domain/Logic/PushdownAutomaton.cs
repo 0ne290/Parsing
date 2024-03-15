@@ -25,7 +25,7 @@ public class PushdownAutomaton : IStateMachine
         }
         catch (Exception)
         {
-            throw new Exception($"{_inputStringIndex}");
+            throw new Exception($"Ошибка в позиции {_inputStringIndex} (если Вы видите номер последней позиции, то, вероятно, не хватает закрывающей скобки).");
         }
     }
     

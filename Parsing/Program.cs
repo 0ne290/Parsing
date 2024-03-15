@@ -16,6 +16,9 @@ internal static class Program
         reader.Dispose();
         
         translator.Translate(inputString);
+
+        Console.Write("Нажмите любую клавишу для завершения программы...");
+        Console.ReadKey();
     }
 
     private static Translator RootOfComposition()
@@ -38,6 +41,135 @@ internal static class Program
         nine.AddState('+', transition);
         nine.AddState('*', transition);
         nine.AddState('\0', new Transition(finalState, Transition.StackActionEmpty));
+
+
+        var two = new State("two");
+        
+        transition = new Transition(two, lexemeAction: Transition.LexemeActionAddChar);
+        
+        two.AddState('=', operandAndOperatorTransition);
+        
+        two.AddState('A', transition);
+        two.AddState('B', transition);
+        two.AddState('C', transition);
+        two.AddState('D', transition);
+        two.AddState('E', transition);
+        two.AddState('F', transition);
+        two.AddState('G', transition);
+        two.AddState('H', transition);
+        two.AddState('I', transition);
+        two.AddState('J', transition);
+        two.AddState('K', transition);
+        two.AddState('L', transition);
+        two.AddState('M', transition);
+        two.AddState('N', transition);
+        two.AddState('O', transition);
+        two.AddState('P', transition);
+        two.AddState('Q', transition);
+        two.AddState('R', transition);
+        two.AddState('S', transition);
+        two.AddState('T', transition);
+        two.AddState('U', transition);
+        two.AddState('V', transition);
+        two.AddState('W', transition);
+        two.AddState('X', transition);
+        two.AddState('Y', transition);
+        two.AddState('Z', transition);
+        
+        two.AddState('a', transition);
+        two.AddState('b', transition);
+        two.AddState('c', transition);
+        two.AddState('d', transition);
+        two.AddState('e', transition);
+        two.AddState('f', transition);
+        two.AddState('g', transition);
+        two.AddState('h', transition);
+        two.AddState('i', transition);
+        two.AddState('j', transition);
+        two.AddState('k', transition);
+        two.AddState('l', transition);
+        two.AddState('m', transition);
+        two.AddState('n', transition);
+        two.AddState('o', transition);
+        two.AddState('p', transition);
+        two.AddState('q', transition);
+        two.AddState('r', transition);
+        two.AddState('s', transition);
+        two.AddState('t', transition);
+        two.AddState('u', transition);
+        two.AddState('v', transition);
+        two.AddState('w', transition);
+        two.AddState('x', transition);
+        two.AddState('y', transition);
+        two.AddState('z', transition);
+        
+        two.AddState('0', transition);
+        two.AddState('1', transition);
+        two.AddState('2', transition);
+        two.AddState('3', transition);
+        two.AddState('4', transition);
+        two.AddState('5', transition);
+        two.AddState('6', transition);
+        two.AddState('7', transition);
+        two.AddState('8', transition);
+        two.AddState('9', transition);
+        
+
+        var eleven = new State("eleven");
+        
+        eleven.AddState('A', transition);
+        eleven.AddState('B', transition);
+        eleven.AddState('C', transition);
+        eleven.AddState('D', transition);
+        eleven.AddState('E', transition);
+        eleven.AddState('F', transition);
+        eleven.AddState('G', transition);
+        eleven.AddState('H', transition);
+        eleven.AddState('I', transition);
+        eleven.AddState('J', transition);
+        eleven.AddState('K', transition);
+        eleven.AddState('L', transition);
+        eleven.AddState('M', transition);
+        eleven.AddState('N', transition);
+        eleven.AddState('O', transition);
+        eleven.AddState('P', transition);
+        eleven.AddState('Q', transition);
+        eleven.AddState('R', transition);
+        eleven.AddState('S', transition);
+        eleven.AddState('T', transition);
+        eleven.AddState('U', transition);
+        eleven.AddState('V', transition);
+        eleven.AddState('W', transition);
+        eleven.AddState('X', transition);
+        eleven.AddState('Y', transition);
+        eleven.AddState('Z', transition);
+        
+        eleven.AddState('a', transition);
+        eleven.AddState('b', transition);
+        eleven.AddState('c', transition);
+        eleven.AddState('d', transition);
+        eleven.AddState('e', transition);
+        eleven.AddState('f', transition);
+        eleven.AddState('g', transition);
+        eleven.AddState('h', transition);
+        eleven.AddState('i', transition);
+        eleven.AddState('j', transition);
+        eleven.AddState('k', transition);
+        eleven.AddState('l', transition);
+        eleven.AddState('m', transition);
+        eleven.AddState('n', transition);
+        eleven.AddState('o', transition);
+        eleven.AddState('p', transition);
+        eleven.AddState('q', transition);
+        eleven.AddState('r', transition);
+        eleven.AddState('s', transition);
+        eleven.AddState('t', transition);
+        eleven.AddState('u', transition);
+        eleven.AddState('v', transition);
+        eleven.AddState('w', transition);
+        eleven.AddState('x', transition);
+        eleven.AddState('y', transition);
+        eleven.AddState('z', transition);
         
         
         var five = new State("five");
@@ -279,6 +411,6 @@ internal static class Program
         three.AddState('\0', finalTransition);
 
 
-        return new Translator(new PushdownAutomaton(one), new NameParser(), new MarshallingYardAlgorithm(), new Optimizer(), new Logger());
+        return new Translator(new PushdownAutomaton(eleven), new NameParser(), new MarshallingYardAlgorithm(), new Optimizer(), new Logger());
     }
 }
