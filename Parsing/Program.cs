@@ -5,20 +5,33 @@ namespace Parsing;
 
 internal static class Program
 {
-    private static void Main()
+    private static int Main()
     {
-        var translator = RootOfComposition();
+        try
+        {
+            var translator = RootOfComposition();
 
-        var reader = new StreamReader("input.txt", System.Text.Encoding.UTF8);
+            var reader = new StreamReader("input.txt", System.Text.Encoding.UTF8);
 
-        var inputString = reader.ReadToEnd();
+            var inputString = reader.ReadToEnd();
         
-        reader.Dispose();
+            reader.Dispose();
         
-        translator.Translate(inputString);
+            translator.Translate(inputString);
 
-        Console.Write("Нажмите любую клавишу для завершения программы...");
-        Console.ReadKey();
+            Console.Write("Нажмите любую клавишу для завершения программы...");
+            Console.ReadKey();
+
+            return 0;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            Console.Write("\nНажмите любую клавишу для завершения программы...");
+            Console.ReadKey();
+            
+            return 1;
+        }
     }
 
     private static Translator RootOfComposition()
@@ -213,7 +226,19 @@ internal static class Program
         
         
         var six = new State("six");
+
+        six.AddState('1', transition);
+        six.AddState('2', transition);
+        six.AddState('3', transition);
+        six.AddState('4', transition);
+        six.AddState('5', transition);
+        six.AddState('6', transition);
+        six.AddState('7', transition);
+        six.AddState('8', transition);
+        six.AddState('9', transition);
+        
         transition = new Transition(seven, lexemeAction: Transition.LexemeActionAddChar);
+        
         six.AddState('+', transition);
         six.AddState('-', transition);
         
