@@ -1,6 +1,4 @@
 using Parsing.Core.Domain.Data.BinarySyntaxTree;
-using Parsing.Core.Domain.Data.Syntax;
-using Parsing.Core.Domain.Enums;
 using Parsing.Core.Domain.Interfaces;
 
 namespace Parsing.Core.Domain.Logic;
