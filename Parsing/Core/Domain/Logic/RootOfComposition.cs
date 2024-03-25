@@ -9,9 +9,14 @@ public class RootOfComposition
     {
         var one = State.One();
         var two = State.Two();
+        var three = State.Three();
+        var four = State.Four();
+        var five = State.Five();
+        var six = State.Six();
+        var seven = State.Seven();
+        var eigth = State.Eigth();
         var nine = State.Nine();
-
-
+        var eleven = State.Eleven();
         var final = State.Final();
 
         var oneTransition = new Transition(one, Transition.StackActionPush, Transition.LexemeActionOperatorRecognized);
@@ -27,39 +32,13 @@ public class RootOfComposition
         nineTransition = new Transition(final, Transition.StackActionEmpty);
         nine.AddStateForNull(nineTransition);
 
-        var twoTransition = Transition.CreateLexemeActionAddChar(two);
 
-        two.AddStateForSymbols('A', 'Z', twoTransition);
-        two.AddStateForSymbols('a', 'z', twoTransition);
-        two.AddStateForSymbols('0', '9', twoTransition);
-
-        var elevenTransition = Transition.CreateLexemeActionAddChar(two);
-        var eleven = State.Eleven();
-
-        eleven.AddStateForSymbols('A', 'Z', elevenTransition);
-        eleven.AddStateForSymbols('a', 'z', elevenTransition);
-
-        var five = State.Five();
         var fiveTransition = Transition.CreateLexemeActionAddChar(five);
 
         one.AddStateForZero(fiveTransition);
 
-        var eigth = State.Eigth();
-        var eigthTransition = Transition.CreateLexemeActionAddChar(eigth);
 
-        eigth.AddStateForSymbols('0', '9', eigthTransition);
-
-        var seven = State.Seven();
-        var sevenTransition = Transition.CreateLexemeActionAddChar(eigth);
-
-        seven.AddStateForSymbols('1', '9', sevenTransition);
-
-        var six = State.Six();
-        var sixTransition = Transition.CreateLexemeActionAddChar(eigth);
-
-        six.AddStateForSymbols('1', '9', sixTransition);
-
-        sixTransition = Transition.CreateLexemeActionAddChar(seven);
+        var sixTransition = Transition.CreateLexemeActionAddChar(seven);
 
         six.AddStateForPlus(sixTransition);
         six.AddStateForMinus(sixTransition);
@@ -69,40 +48,60 @@ public class RootOfComposition
 
         five.AddStateForDecimalPoint(tenTransition);
 
-        ten.AddStateForSymbols('0', '9', tenTransition);
-
         tenTransition = Transition.CreateLexemeActionAddChar(six);
         ten.AddStateForExponent(tenTransition);
         ten.AddStateForLn(tenTransition);
 
-        var four = State.Four();
-        var fourTransition = Transition.CreateLexemeActionAddChar(four);
-
-        one.AddStateForSymbols('1', '9', fourTransition);
-        four.AddStateForSymbols('0', '9', fourTransition);
-
-        fourTransition = Transition.CreateLexemeActionAddChar(ten);
+        var fourTransition = Transition.CreateLexemeActionAddChar(ten);
         four.AddStateForDecimalPoint(fourTransition);
 
         fourTransition = Transition.CreateLexemeActionAddChar(six);
         four.AddStateForExponent(fourTransition);
         four.AddStateForLn(fourTransition);
 
-        var three = State.Three();
-        var threeTransition = Transition.CreateLexemeActionAddChar(three);
-
-        one.AddStateForSymbols('A', 'Z', threeTransition);
-        one.AddStateForSymbols('a', 'z', threeTransition);
-
-        three.AddStateForSymbols('A', 'Z', threeTransition);
-        three.AddStateForSymbols('a', 'z', threeTransition);
-        three.AddStateForSymbols('0', '9', threeTransition);
-
+        CreateLexemeActionAddCharTransitionGenerator(one, two, three, four, six, seven, eigth, ten, eleven);
         OperandAndClosingParenthesisTransitionGenerator(three, four, eigth, nine, ten);
         OperandAndOperatorTransitiongenerator(one, two, three, four, eigth, ten);
         FinalGenerator(three, four, eigth, ten, final);
 
         return Translator.Create(eleven);
+    }
+
+    public void CreateLexemeActionAddCharTransitionGenerator(State one, State two, State three, State four, State six, State seven, State eigth, State ten, State eleven)
+    {
+        var twoTransition = Transition.CreateLexemeActionAddChar(two);
+        var threeTransition = Transition.CreateLexemeActionAddChar(three);
+        var fourTransition = Transition.CreateLexemeActionAddChar(four);
+        var sixTransition = Transition.CreateLexemeActionAddChar(eigth);
+        var sevenTransition = Transition.CreateLexemeActionAddChar(eigth);
+        var eigthTransition = Transition.CreateLexemeActionAddChar(eigth);
+        var tenTransition = Transition.CreateLexemeActionAddChar(ten);
+        var elevenTransition = Transition.CreateLexemeActionAddChar(two);
+
+        one.AddStateForSymbols('A', 'Z', threeTransition);
+        one.AddStateForSymbols('a', 'z', threeTransition);
+        one.AddStateForSymbols('1', '9', fourTransition);
+
+        two.AddStateForSymbols('A', 'Z', twoTransition);
+        two.AddStateForSymbols('a', 'z', twoTransition);
+        two.AddStateForSymbols('0', '9', twoTransition);
+
+        three.AddStateForSymbols('A', 'Z', threeTransition);
+        three.AddStateForSymbols('a', 'z', threeTransition);
+        three.AddStateForSymbols('0', '9', threeTransition);
+
+        four.AddStateForSymbols('0', '9', fourTransition);
+
+        six.AddStateForSymbols('1', '9', sixTransition);
+        
+        seven.AddStateForSymbols('1', '9', sevenTransition);
+        
+        eigth.AddStateForSymbols('0', '9', eigthTransition);
+
+        ten.AddStateForSymbols('0', '9', tenTransition);
+
+        eleven.AddStateForSymbols('A', 'Z', elevenTransition);
+        eleven.AddStateForSymbols('a', 'z', elevenTransition);
     }
 
     void OperandAndClosingParenthesisTransitionGenerator(State three, State four, State eigth, State nine, State ten)
