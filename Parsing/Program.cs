@@ -15,8 +15,8 @@ internal static class Program
         
             reader.Dispose();
 
-            var rootOfComposition = new RootOfComposition();
-            var translator = rootOfComposition.CreateTranslator();
+            var rootOfComposition = new TranslatorGenerator();
+            var translator = rootOfComposition.Create();
             translator.Translate(inputString);
 
             Console.Write("Нажмите любую клавишу для завершения программы...");

@@ -3,9 +3,9 @@ using System.Threading;
 
 namespace Parsing.Core.Domain.Logic;
 
-public class RootOfComposition
+public class TranslatorGenerator
 {
-    public Translator CreateTranslator()
+    public Translator Create()
     {
         var one = State.One();
         var two = State.Two();
@@ -16,55 +16,79 @@ public class RootOfComposition
         var seven = State.Seven();
         var eigth = State.Eigth();
         var nine = State.Nine();
+        var ten = State.Ten();
         var eleven = State.Eleven();
         var final = State.Final();
 
-        var oneTransition = new Transition(one, Transition.StackActionPush, Transition.LexemeActionOperatorRecognized);
-        var nineTransition = new Transition(nine, Transition.StackActionPop, Transition.LexemeActionOperatorRecognized);
-
-        one.AddStateForOpeningParenthesis(oneTransition);
-        nine.AddStateForClosingParenthesis(nineTransition);
-
-        nineTransition = new Transition(one, lexemeAction: Transition.LexemeActionOperatorRecognized);
-        nine.AddStateForPlus(nineTransition);
-        nine.AddStateForMultiply(nineTransition);
-
-        nineTransition = new Transition(final, Transition.StackActionEmpty);
-        nine.AddStateForNull(nineTransition);
-
-
-        var fiveTransition = Transition.CreateLexemeActionAddChar(five);
-
-        one.AddStateForZero(fiveTransition);
-
-
-        var sixTransition = Transition.CreateLexemeActionAddChar(seven);
-
-        six.AddStateForPlus(sixTransition);
-        six.AddStateForMinus(sixTransition);
-
-        var ten = State.Ten();
-        var tenTransition = Transition.CreateLexemeActionAddChar(ten);
-
-        five.AddStateForDecimalPoint(tenTransition);
-
-        tenTransition = Transition.CreateLexemeActionAddChar(six);
-        ten.AddStateForExponent(tenTransition);
-        ten.AddStateForLn(tenTransition);
-
-        var fourTransition = Transition.CreateLexemeActionAddChar(ten);
-        four.AddStateForDecimalPoint(fourTransition);
-
-        fourTransition = Transition.CreateLexemeActionAddChar(six);
-        four.AddStateForExponent(fourTransition);
-        four.AddStateForLn(fourTransition);
-
+        OneGenerator(one, five);
+        NineGenerator(one, nine, final);
+        SixGenerator(six, seven);
+        FiveGenerator(five, ten);
+        TenGenerator(six, ten);
+        FourGenerator(four, six, ten);
         CreateLexemeActionAddCharTransitionGenerator(one, two, three, four, six, seven, eigth, ten, eleven);
         OperandAndClosingParenthesisTransitionGenerator(three, four, eigth, nine, ten);
         OperandAndOperatorTransitiongenerator(one, two, three, four, eigth, ten);
         FinalGenerator(three, four, eigth, ten, final);
 
         return Translator.Create(eleven);
+    }
+
+    void OneGenerator(State one, State five)
+    {
+        var oneTransition = new Transition(one, Transition.StackActionPush, Transition.LexemeActionOperatorRecognized);
+        var fiveTransition = Transition.CreateLexemeActionAddChar(five);
+
+        one.AddStateForOpeningParenthesis(oneTransition);
+        one.AddStateForZero(fiveTransition);
+    }
+
+    void NineGenerator(State one, State nine, State final)
+    {
+        var oneTransition = new Transition(one, lexemeAction: Transition.LexemeActionOperatorRecognized);
+        var nineTransition = new Transition(nine, Transition.StackActionPop, Transition.LexemeActionOperatorRecognized);
+        var finalTransition = new Transition(final, Transition.StackActionEmpty);
+
+        nine.AddStateForPlus(oneTransition);
+        nine.AddStateForMultiply(oneTransition);
+
+        nine.AddStateForClosingParenthesis(nineTransition);
+
+        nine.AddStateForNull(finalTransition);
+    }
+
+    void SixGenerator(State six, State seven)
+    {
+        var sixTransition = Transition.CreateLexemeActionAddChar(seven);
+
+        six.AddStateForPlus(sixTransition);
+        six.AddStateForMinus(sixTransition);
+    }
+
+    public void FiveGenerator(State five, State ten)
+    {
+        var tenTransition = Transition.CreateLexemeActionAddChar(ten);
+
+        five.AddStateForDecimalPoint(tenTransition);
+    }
+
+    void TenGenerator(State six, State ten)
+    {
+        var transition = Transition.CreateLexemeActionAddChar(six);
+        
+        ten.AddStateForExponent(transition);
+        ten.AddStateForLn(transition);
+    }
+    
+    void FourGenerator(State four, State six, State ten)
+    {
+        var transitionSix = Transition.CreateLexemeActionAddChar(six);
+        var transitionTen = Transition.CreateLexemeActionAddChar(ten);
+
+        four.AddStateForDecimalPoint(transitionTen);
+
+        four.AddStateForExponent(transitionSix);
+        four.AddStateForLn(transitionSix);
     }
 
     public void CreateLexemeActionAddCharTransitionGenerator(State one, State two, State three, State four, State six, State seven, State eigth, State ten, State eleven)
