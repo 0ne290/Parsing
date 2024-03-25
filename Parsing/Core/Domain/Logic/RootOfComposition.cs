@@ -12,11 +12,7 @@ public class RootOfComposition
         var nine = State.Nine();
 
 
-        var finalState = State.Final();
-        var finalTransition = Transition.Final(finalState);
-        var operandAndOperatorTransition = Transition.OperandAndOperatorTransition(one);
-        var operandAndClosingParenthesisTransition = Transition.OperandAndClosingParenthesisTransition(nine);
-
+        var final = State.Final();
 
         var oneTransition = new Transition(one, Transition.StackActionPush, Transition.LexemeActionOperatorRecognized);
         var nineTransition = new Transition(nine, Transition.StackActionPop, Transition.LexemeActionOperatorRecognized);
@@ -28,7 +24,7 @@ public class RootOfComposition
         nine.AddStateForPlus(nineTransition);
         nine.AddStateForMultiply(nineTransition);
 
-        nineTransition = new Transition(finalState, Transition.StackActionEmpty);
+        nineTransition = new Transition(final, Transition.StackActionEmpty);
         nine.AddStateForNull(nineTransition);
 
         var twoTransition = Transition.CreateLexemeActionAddChar(two);
@@ -52,7 +48,6 @@ public class RootOfComposition
         var eigthTransition = Transition.CreateLexemeActionAddChar(eigth);
 
         eigth.AddStateForSymbols('0', '9', eigthTransition);
-        eigth.AddStateForClosingParenthesis(operandAndClosingParenthesisTransition);
 
         var seven = State.Seven();
         var sevenTransition = Transition.CreateLexemeActionAddChar(eigth);
@@ -80,8 +75,6 @@ public class RootOfComposition
         ten.AddStateForExponent(tenTransition);
         ten.AddStateForLn(tenTransition);
 
-        ten.AddStateForClosingParenthesis(operandAndClosingParenthesisTransition);
-
         var four = State.Four();
         var fourTransition = Transition.CreateLexemeActionAddChar(four);
 
@@ -95,8 +88,6 @@ public class RootOfComposition
         four.AddStateForExponent(fourTransition);
         four.AddStateForLn(fourTransition);
 
-        four.AddStateForClosingParenthesis(operandAndClosingParenthesisTransition);
-
         var three = State.Three();
         var threeTransition = Transition.CreateLexemeActionAddChar(three);
 
@@ -107,32 +98,45 @@ public class RootOfComposition
         three.AddStateForSymbols('a', 'z', threeTransition);
         three.AddStateForSymbols('0', '9', threeTransition);
 
-        three.AddStateForClosingParenthesis(operandAndClosingParenthesisTransition);
-
-        OperandAndOperatorTransition(two, three, four, eigth, ten, operandAndOperatorTransition);
-        FinalGenerator(three, four, eigth, ten, finalTransition);
+        OperandAndClosingParenthesisTransitionGenerator(three, four, eigth, nine, ten);
+        OperandAndOperatorTransitiongenerator(one, two, three, four, eigth, ten);
+        FinalGenerator(three, four, eigth, ten, final);
 
         return Translator.Create(eleven);
     }
 
-    void OperandAndOperatorTransition(State two, State three, State four, State eigth, State ten, Transition operandAndOperatorTransition)
+    void OperandAndClosingParenthesisTransitionGenerator(State three, State four, State eigth, State nine, State ten)
     {
-        two.AddStateForEquals(operandAndOperatorTransition);
-        three.AddStateForPlus(operandAndOperatorTransition);
-        three.AddStateForMultiply(operandAndOperatorTransition);
-        four.AddStateForPlus(operandAndOperatorTransition);
-        four.AddStateForMultiply(operandAndOperatorTransition);
-        eigth.AddStateForPlus(operandAndOperatorTransition);
-        eigth.AddStateForMultiply(operandAndOperatorTransition);
-        ten.AddStateForPlus(operandAndOperatorTransition);
-        ten.AddStateForMultiply(operandAndOperatorTransition);
+        var transition = Transition.OperandAndClosingParenthesisTransition(nine);
+        
+        three.AddStateForClosingParenthesis(transition);
+        four.AddStateForClosingParenthesis(transition);
+        eigth.AddStateForClosingParenthesis(transition);
+        ten.AddStateForClosingParenthesis(transition);
     }
 
-    void FinalGenerator(State three, State four, State eigth, State ten, Transition finalTransition)
+    void OperandAndOperatorTransitiongenerator(State one, State two, State three, State four, State eigth, State ten)
     {
-        three.AddStateForNull(finalTransition);
-        four.AddStateForNull(finalTransition);
-        eigth.AddStateForNull(finalTransition);
-        ten.AddStateForNull(finalTransition);
+        var transition = Transition.OperandAndOperatorTransition(one);
+        
+        two.AddStateForEquals(transition);
+        three.AddStateForPlus(transition);
+        three.AddStateForMultiply(transition);
+        four.AddStateForPlus(transition);
+        four.AddStateForMultiply(transition);
+        eigth.AddStateForPlus(transition);
+        eigth.AddStateForMultiply(transition);
+        ten.AddStateForPlus(transition);
+        ten.AddStateForMultiply(transition);
+    }
+
+    void FinalGenerator(State three, State four, State eigth, State ten, State final)
+    {
+        var transition = Transition.Final(final);
+
+        three.AddStateForNull(transition);
+        four.AddStateForNull(transition);
+        eigth.AddStateForNull(transition);
+        ten.AddStateForNull(transition);
     }
 }
