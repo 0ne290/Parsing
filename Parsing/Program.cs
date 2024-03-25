@@ -46,79 +46,64 @@ internal static class Program
         var operandAndOperatorTransition = Transition.OperandAndOperatorTransition(one);
         var operandAndClosingParenthesisTransition = Transition.OperandAndClosingParenthesisTransition(nine);
         
-        
-        one.AddState('(', new Transition(one, Transition.StackActionPush, Transition.LexemeActionOperatorRecognized));
-        nine.AddState(')', new Transition(nine, Transition.StackActionPop, Transition.LexemeActionOperatorRecognized));
-        var transition = new Transition(one, lexemeAction: Transition.LexemeActionOperatorRecognized);
-        nine.AddState('+', transition);
-        nine.AddState('*', transition);
-        nine.AddState('\0', new Transition(finalState, Transition.StackActionEmpty));
+        one.AddStateForOpeningParenthesis(new Transition(one, Transition.StackActionPush, Transition.LexemeActionOperatorRecognized));
+        nine.AddStateForClosingParenthesis(new Transition(nine, Transition.StackActionPop, Transition.LexemeActionOperatorRecognized));
+
+        var nineTransition = new Transition(one, lexemeAction: Transition.LexemeActionOperatorRecognized);
+        nine.AddStateForPlus(nineTransition);
+        nine.AddStateForMultiply(nineTransition);
+        nine.AddStateForNull(new Transition(finalState, Transition.StackActionEmpty));
        
         var twoTransition = new Transition(two, lexemeAction: Transition.LexemeActionAddChar);
 
-        for (var symbol = 'A'; symbol <= 'Z'; symbol++)
-            two.AddState(symbol, twoTransition);
+        two.AddStateForSymbols('A', 'Z', twoTransition);
+        two.AddStateForSymbols('a', 'z', twoTransition);
+        two.AddStateForSymbols('0', '9', twoTransition);
 
-        for (var symbol = 'a'; symbol <= 'z'; symbol++)
-            two.AddState(symbol, twoTransition);
-
-        for (var symbol = '0'; symbol <= '9'; symbol++)
-            two.AddState(symbol, twoTransition);
-
-        two.AddState('=', operandAndOperatorTransition);
+        two.AddStateForEquals(operandAndOperatorTransition);
         
         var elevenTransition = new Transition(two, lexemeAction: Transition.LexemeActionAddChar);
         var eleven = State.Eleven();
 
-        for (var symbol = 'A'; symbol <= 'Z'; symbol++)
-            eleven.AddState(symbol, elevenTransition);
-
-        for (var symbol = 'a'; symbol <= 'z'; symbol++)
-            eleven.AddState(symbol, elevenTransition);
+        eleven.AddStateForSymbols('A', 'Z', elevenTransition);
+        eleven.AddStateForSymbols('a', 'z', elevenTransition);
 
         var five = State.Five();
         
-        one.AddState('0', new Transition(five, lexemeAction: Transition.LexemeActionAddChar));
-
+        one.AddStateForZero(new Transition(five, lexemeAction: Transition.LexemeActionAddChar));
 
         var eigth = State.Eigth();
         var eigthTransition = new Transition(eigth, lexemeAction: Transition.LexemeActionAddChar);
 
-        for (var symbol = '0'; symbol <= '9'; symbol++)
-            eigth.AddState(symbol, eigthTransition);
-
-        eigth.AddState(')', operandAndClosingParenthesisTransition);
-        
-        eigth.AddState('+', operandAndOperatorTransition);
-        eigth.AddState('*', operandAndOperatorTransition);
-        
-        eigth.AddState('\0', finalTransition);
+        eigth.AddStateForSymbols('0', '9', eigthTransition);
+        eigth.AddStateForClosingParenthesis(operandAndClosingParenthesisTransition);
+        eigth.AddStateForPlus(operandAndOperatorTransition);
+        eigth.AddStateForMultiply(operandAndOperatorTransition);
+        eigth.AddStateForNull(finalTransition);
         
         
         var seven = State.Seven();
         var sevenTransition = new Transition(eigth, lexemeAction: Transition.LexemeActionAddChar);
 
-        for (var symbol = '1'; symbol <= '9'; symbol++)
-            seven.AddState(symbol, sevenTransition);
+        seven.AddStateForSymbols('1', '9', sevenTransition);
 
         var six = State.Six();
         var sixTransition = new Transition(eigth, lexemeAction: Transition.LexemeActionAddChar);
 
-        for (var symbol = '1'; symbol <= '9'; symbol++)
-            six.AddState(symbol, sixTransition);
+        six.AddStateForSymbols('1', '9', sixTransition);
 
         sixTransition = new Transition(seven, lexemeAction: Transition.LexemeActionAddChar);
        
-        six.AddState('+', sixTransition);
-        six.AddState('-', sixTransition);
+        six.AddStateForPlus(sixTransition);
+        six.AddStateForMinus(sixTransition);
         
         
         var ten = State.Ten();
         var tenTransition = new Transition(ten, lexemeAction: Transition.LexemeActionAddChar);
         
         five.AddState('.', tenTransition);
-        for (var symbol = '0'; symbol <= '9'; symbol++)
-            ten.AddState(symbol, tenTransition);
+
+        ten.AddStateForSymbols('0', '9', tenTransition);
         
         ten.AddState('E', new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
         ten.AddState('e', new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
@@ -134,12 +119,9 @@ internal static class Program
         var four = State.Four();
         var fourTransition = new Transition(four, lexemeAction: Transition.LexemeActionAddChar);
 
-        for (var symbol = '1'; symbol <= '9'; symbol++)
-            one.AddState(symbol, fourTransition);
-
-        for (var symbol = '0'; symbol <= '9'; symbol++)
-            four.AddState(symbol, fourTransition);
-       
+        one.AddStateForSymbols('1', '9', fourTransition);
+        four.AddStateForSymbols('0', '9', fourTransition);
+      
         four.AddState('.', new Transition(ten, lexemeAction: Transition.LexemeActionAddChar));
         
         four.AddState('E', new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
@@ -152,25 +134,15 @@ internal static class Program
         
         four.AddState('\0', finalTransition);
         
-        
-        
         var three = State.Three();
         var threeTransition = new Transition(three, lexemeAction: Transition.LexemeActionAddChar);
 
-        for (var symbol = 'A'; symbol <= 'Z'; symbol++)
-            one.AddState(symbol, threeTransition);
+        one.AddStateForSymbols('A', 'Z', threeTransition);
+        one.AddStateForSymbols('a', 'z', threeTransition);
 
-        for (var symbol = 'a'; symbol <= 'z'; symbol++)
-            one.AddState(symbol, threeTransition);
-
-        for (var symbol = 'A'; symbol <= 'Z'; symbol++)
-            three.AddState(symbol, threeTransition);
-
-        for (var symbol = 'a'; symbol <= 'z'; symbol++)
-            three.AddState(symbol, threeTransition);
-
-        for (var symbol = '0'; symbol <= '9'; symbol++)
-            three.AddState(symbol, threeTransition);
+        three.AddStateForSymbols('A', 'Z', threeTransition);
+        three.AddStateForSymbols('a', 'z', threeTransition);
+        three.AddStateForSymbols('0', '9', threeTransition);
         
         three.AddState(')', operandAndClosingParenthesisTransition);
         
@@ -179,7 +151,8 @@ internal static class Program
         
         three.AddState('\0', finalTransition);
 
-
-        return new Translator(new PushdownAutomaton(eleven), new NameParser(), new MarshallingYardAlgorithm(), new Optimizer(), new Logger());
+        return Translator.Create(eleven);
     }
+
+    
 }

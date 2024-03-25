@@ -1,4 +1,5 @@
 using Parsing.Core.Domain.Data.BinarySyntaxTree;
+using Parsing.Core.Domain.Data.StateMachine;
 using Parsing.Core.Domain.Interfaces;
 
 namespace Parsing.Core.Domain.Logic;
@@ -12,6 +13,17 @@ public class Translator
         _syntaxTreeBuilder = syntaxTreeBuilder;
         _optimizer = optimizer;
         _logger = logger;
+    }
+
+    public static Translator Create(State state)
+    {
+        var pushdownAutomaton = new PushdownAutomaton(state);
+        var nameParser = new NameParser();
+        var marshallingYardAlgorithm = new MarshallingYardAlgorithm();
+        var optimizer = new Optimizer();
+        var logger = new Logger();
+
+        return new Translator(pushdownAutomaton, nameParser, marshallingYardAlgorithm, optimizer, logger);
     }
 
     public void Translate(string inputString)
