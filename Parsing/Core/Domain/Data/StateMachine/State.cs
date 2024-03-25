@@ -28,9 +28,11 @@ public class State
     public void AddStateForMinus(Transition transition) => _transitions.Add('-', transition);
     public void AddStateForMultiply(Transition transition) => _transitions.Add('*', transition);
     public void AddStateForEquals(Transition transition) => _transitions.Add('=', transition);
+    public void AddStateForDecimalPoint(Transition transition) => _transitions.Add('.', transition);
     public void AddStateForZero(Transition transition) => _transitions.Add('0', transition);
     public void AddStateForNull(Transition transition) => _transitions.Add('\0', transition);
-    public void AddStateForLn(Transition transition) => _transitions.Add('E', transition);
+    public void AddStateForExponent(Transition transition) => _transitions.Add('E', transition);
+    public void AddStateForLn(Transition transition) => _transitions.Add('e', transition);
 
     public void AddStateForOpeningParenthesis(Transition transition) => _transitions.Add('(', transition);
     public void AddStateForClosingParenthesis(Transition transition) => _transitions.Add(')', transition);
