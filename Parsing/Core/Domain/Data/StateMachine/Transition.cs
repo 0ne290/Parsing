@@ -10,7 +10,13 @@ public class Transition
         StackAction = stackAction ?? (_ => { });
         LexemeAction = lexemeAction ?? ((_, _, _) => { });
     }
-    
+
+    public static Transition Final(State finalState) => new(finalState, StackActionEmpty, LexemeActionOperandRecognized);
+
+    public static Transition OperandAndOperatorTransition(State one) => new(one, lexemeAction: LexemeActionOperandAndOperatorRecognized);
+
+    public static Transition OperandAndClosingParenthesisTransition(State nine) => new(nine, StackActionPop, LexemeActionOperandAndOperatorRecognized);
+
     public State State { get; }
     
     public Action<Stack<char>> StackAction { get; }

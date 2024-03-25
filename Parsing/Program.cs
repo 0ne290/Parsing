@@ -36,16 +36,14 @@ internal static class Program
 
     private static Translator RootOfComposition()
     {
-        var one = new State("one");
-        var nine = new State("nine");
+        var one = State.One();
+        var nine = State.Nine();
         
         
-        var finalState = new State("final", true);
-        var finalTransition = new Transition(finalState, Transition.StackActionEmpty, Transition.LexemeActionOperandRecognized);
-        var operandAndOperatorTransition =
-                    new Transition(one, lexemeAction: Transition.LexemeActionOperandAndOperatorRecognized);
-        var operandAndClosingParenthesisTransition =
-            new Transition(nine, Transition.StackActionPop, Transition.LexemeActionOperandAndOperatorRecognized);
+        var finalState = State.Final();
+        var finalTransition = Transition.Final(finalState);
+        var operandAndOperatorTransition = Transition.OperandAndOperatorTransition(one);
+        var operandAndClosingParenthesisTransition = Transition.OperandAndClosingParenthesisTransition(nine);
         
         
         one.AddState('(', new Transition(one, Transition.StackActionPush, Transition.LexemeActionOperatorRecognized));
@@ -56,7 +54,7 @@ internal static class Program
         nine.AddState('\0', new Transition(finalState, Transition.StackActionEmpty));
 
 
-        var two = new State("two");
+        var two = State.Two();
         
         transition = new Transition(two, lexemeAction: Transition.LexemeActionAddChar);
         
@@ -128,7 +126,7 @@ internal static class Program
         two.AddState('9', transition);
         
 
-        var eleven = new State("eleven");
+        var eleven = State.Eleven();
         
         eleven.AddState('A', transition);
         eleven.AddState('B', transition);
@@ -185,12 +183,12 @@ internal static class Program
         eleven.AddState('z', transition);
         
         
-        var five = new State("five");
+        var five = State.Five();
         
         one.AddState('0', new Transition(five, lexemeAction: Transition.LexemeActionAddChar));
         
         
-        var eigth = new State("eigth");
+        var eigth = State.Eigth();
         
         transition = new Transition(eigth, lexemeAction: Transition.LexemeActionAddChar);
         
@@ -213,7 +211,7 @@ internal static class Program
         eigth.AddState('\0', finalTransition);
         
         
-        var seven = new State("seven");
+        var seven = State.Seven();
         seven.AddState('1', transition);
         seven.AddState('2', transition);
         seven.AddState('3', transition);
@@ -225,7 +223,7 @@ internal static class Program
         seven.AddState('9', transition);
         
         
-        var six = new State("six");
+        var six = State.Six();
 
         six.AddState('1', transition);
         six.AddState('2', transition);
@@ -243,7 +241,7 @@ internal static class Program
         six.AddState('-', transition);
         
         
-        var ten = new State("ten");
+        var ten = State.Ten();
         transition = new Transition(ten, lexemeAction: Transition.LexemeActionAddChar);
         five.AddState('.', transition);
         
@@ -270,7 +268,7 @@ internal static class Program
         
         
         
-        var four = new State("four");
+        var four = State.Four();
         transition = new Transition(four, lexemeAction: Transition.LexemeActionAddChar);
         one.AddState('1', transition);
         one.AddState('2', transition);
@@ -307,7 +305,7 @@ internal static class Program
         
         
         
-        var three = new State("three");
+        var three = State.Three();
         transition = new Transition(three, lexemeAction: Transition.LexemeActionAddChar);
         one.AddState('A', transition);
         one.AddState('B', transition);
