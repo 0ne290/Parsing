@@ -1,4 +1,5 @@
 ﻿using Parsing.Core.Domain.Data.StateMachine;
+using System.Threading;
 
 namespace Parsing.Core.Domain.Logic;
 
@@ -16,15 +17,21 @@ public class RootOfComposition
         var operandAndOperatorTransition = Transition.OperandAndOperatorTransition(one);
         var operandAndClosingParenthesisTransition = Transition.OperandAndClosingParenthesisTransition(nine);
 
-        one.AddStateForOpeningParenthesis(new Transition(one, Transition.StackActionPush, Transition.LexemeActionOperatorRecognized));
-        nine.AddStateForClosingParenthesis(new Transition(nine, Transition.StackActionPop, Transition.LexemeActionOperatorRecognized));
 
-        var nineTransition = new Transition(one, lexemeAction: Transition.LexemeActionOperatorRecognized);
+        var oneTransition = new Transition(one, Transition.StackActionPush, Transition.LexemeActionOperatorRecognized);
+        var nineTransition = new Transition(nine, Transition.StackActionPop, Transition.LexemeActionOperatorRecognized);
+
+        one.AddStateForOpeningParenthesis(oneTransition);
+        nine.AddStateForClosingParenthesis(nineTransition);
+
+        nineTransition = new Transition(one, lexemeAction: Transition.LexemeActionOperatorRecognized);
         nine.AddStateForPlus(nineTransition);
         nine.AddStateForMultiply(nineTransition);
-        nine.AddStateForNull(new Transition(finalState, Transition.StackActionEmpty));
 
-        var twoTransition = new Transition(two, lexemeAction: Transition.LexemeActionAddChar);
+        nineTransition = new Transition(finalState, Transition.StackActionEmpty);
+        nine.AddStateForNull(nineTransition);
+
+        var twoTransition = Transition.CreateLexemeActionAddChar(two);
 
         two.AddStateForSymbols('A', 'Z', twoTransition);
         two.AddStateForSymbols('a', 'z', twoTransition);
@@ -32,18 +39,19 @@ public class RootOfComposition
 
         two.AddStateForEquals(operandAndOperatorTransition);
 
-        var elevenTransition = new Transition(two, lexemeAction: Transition.LexemeActionAddChar);
+        var elevenTransition = Transition.CreateLexemeActionAddChar(two);
         var eleven = State.Eleven();
 
         eleven.AddStateForSymbols('A', 'Z', elevenTransition);
         eleven.AddStateForSymbols('a', 'z', elevenTransition);
 
         var five = State.Five();
+        var fiveTransition = Transition.CreateLexemeActionAddChar(five);
 
-        one.AddStateForZero(new Transition(five, lexemeAction: Transition.LexemeActionAddChar));
+        one.AddStateForZero(fiveTransition);
 
         var eigth = State.Eigth();
-        var eigthTransition = new Transition(eigth, lexemeAction: Transition.LexemeActionAddChar);
+        var eigthTransition = Transition.CreateLexemeActionAddChar(eigth);
 
         eigth.AddStateForSymbols('0', '9', eigthTransition);
         eigth.AddStateForClosingParenthesis(operandAndClosingParenthesisTransition);
@@ -51,32 +59,31 @@ public class RootOfComposition
         eigth.AddStateForMultiply(operandAndOperatorTransition);
         eigth.AddStateForNull(finalTransition);
 
-
         var seven = State.Seven();
-        var sevenTransition = new Transition(eigth, lexemeAction: Transition.LexemeActionAddChar);
+        var sevenTransition = Transition.CreateLexemeActionAddChar(eigth);
 
         seven.AddStateForSymbols('1', '9', sevenTransition);
 
         var six = State.Six();
-        var sixTransition = new Transition(eigth, lexemeAction: Transition.LexemeActionAddChar);
+        var sixTransition = Transition.CreateLexemeActionAddChar(eigth);
 
         six.AddStateForSymbols('1', '9', sixTransition);
 
-        sixTransition = new Transition(seven, lexemeAction: Transition.LexemeActionAddChar);
+        sixTransition = Transition.CreateLexemeActionAddChar(seven);
 
         six.AddStateForPlus(sixTransition);
         six.AddStateForMinus(sixTransition);
 
-
         var ten = State.Ten();
-        var tenTransition = new Transition(ten, lexemeAction: Transition.LexemeActionAddChar);
+        var tenTransition = Transition.CreateLexemeActionAddChar(ten);
 
         five.AddStateForDecimalPoint(tenTransition);
 
         ten.AddStateForSymbols('0', '9', tenTransition);
 
-        ten.AddStateForExponent(new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
-        ten.AddStateForLn(new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
+        tenTransition = Transition.CreateLexemeActionAddChar(six);
+        ten.AddStateForExponent(tenTransition);
+        ten.AddStateForLn(tenTransition);
 
         ten.AddStateForClosingParenthesis(operandAndClosingParenthesisTransition);
 
@@ -87,15 +94,17 @@ public class RootOfComposition
 
 
         var four = State.Four();
-        var fourTransition = new Transition(four, lexemeAction: Transition.LexemeActionAddChar);
+        var fourTransition = Transition.CreateLexemeActionAddChar(four);
 
         one.AddStateForSymbols('1', '9', fourTransition);
         four.AddStateForSymbols('0', '9', fourTransition);
 
-        four.AddStateForDecimalPoint(new Transition(ten, lexemeAction: Transition.LexemeActionAddChar));
+        fourTransition = Transition.CreateLexemeActionAddChar(ten);
+        four.AddStateForDecimalPoint(fourTransition);
 
-        four.AddStateForExponent(new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
-        four.AddStateForLn(new Transition(six, lexemeAction: Transition.LexemeActionAddChar));
+        fourTransition = Transition.CreateLexemeActionAddChar(six);
+        four.AddStateForExponent(fourTransition);
+        four.AddStateForLn(fourTransition);
 
         four.AddStateForClosingParenthesis(operandAndClosingParenthesisTransition);
 
@@ -105,7 +114,7 @@ public class RootOfComposition
         four.AddStateForNull(finalTransition);
 
         var three = State.Three();
-        var threeTransition = new Transition(three, lexemeAction: Transition.LexemeActionAddChar);
+        var threeTransition = Transition.CreateLexemeActionAddChar(three);
 
         one.AddStateForSymbols('A', 'Z', threeTransition);
         one.AddStateForSymbols('a', 'z', threeTransition);

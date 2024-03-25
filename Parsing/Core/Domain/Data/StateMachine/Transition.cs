@@ -16,6 +16,7 @@ public class Transition
     public static Transition OperandAndOperatorTransition(State one) => new(one, lexemeAction: LexemeActionOperandAndOperatorRecognized);
 
     public static Transition OperandAndClosingParenthesisTransition(State nine) => new(nine, StackActionPop, LexemeActionOperandAndOperatorRecognized);
+    public static Transition CreateLexemeActionAddChar(State state) => new Transition(state, lexemeAction: LexemeActionAddChar);
 
     public State State { get; }
     
